@@ -2,10 +2,12 @@ import axios from 'axios';
 
 export class Stex {
   key: string;
-  endpoint: 'https://api3.stex.com/';
-  constructor() {}
+  endpoint = 'https://api3.stex.com/';
+  constructor(key: string) {
+    this.init(key);
+  }
 
-  init(key: string) {
+  private init(key: string) {
     this.key = key;
   }
 
