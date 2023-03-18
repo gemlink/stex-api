@@ -1,4 +1,17 @@
 import axios from 'axios';
+import {
+  CancelOrders,
+  CurencyInfo,
+  CurrencyPair,
+  Deposit,
+  DepositAddress,
+  Market,
+  Order,
+  OrderBook,
+  TickerList,
+  WalletInfo,
+  Withdrawal,
+} from './interface';
 
 export class Stex {
   key: string;
@@ -11,7 +24,7 @@ export class Stex {
     this.key = key;
   }
 
-  getCurrencies() {
+  getCurrencies(): Promise<CurencyInfo[]> {
     return axios.get(`${this.endpoint}public/currencies`).then((res) => {
       if (res.data.success) {
         return res.data.data;
@@ -21,7 +34,7 @@ export class Stex {
     });
   }
 
-  getCurrenciesById(id: number) {
+  getCurrenciesById(id: number): Promise<CurencyInfo> {
     return axios
       .get(`${this.endpoint}public/currencies/${id.toString()}`)
       .then((res) => {
@@ -33,7 +46,7 @@ export class Stex {
       });
   }
 
-  getMarkets() {
+  getMarkets(): Promise<Market[]> {
     return axios.get(`${this.endpoint}public/markets`).then((res) => {
       if (res.data.success) {
         return res.data.data;
@@ -42,8 +55,19 @@ export class Stex {
       }
     });
   }
+  getCurrencyPairs(code: string = 'enpty'): Promise<CurrencyPair[]> {
+    return axios
+      .get(`${this.endpoint}public/currency_pairs/list/${code}`)
+      .then((res) => {
+        if (res.data.success) {
+          return res.data.data;
+        } else {
+          throw 'Cannot get markets';
+        }
+      });
+  }
 
-  getCurrentcyPairInfo(currencyPairId: number) {
+  getCurrencyPairInfo(currencyPairId: number): Promise<CurrencyPair> {
     return axios
       .get(`${this.endpoint}public/currency_pairs/${currencyPairId}`)
       .then((res) => {
@@ -55,7 +79,7 @@ export class Stex {
       });
   }
 
-  getTickersList() {
+  getTickersList(): Promise<TickerList[]> {
     return axios.get(`${this.endpoint}public/ticker`).then((res) => {
       if (res.data.success) {
         return res.data.data;
@@ -65,7 +89,7 @@ export class Stex {
     });
   }
 
-  getTickerForPair(currencyPairId: number) {
+  getTickerForPair(currencyPairId: number): Promise<TickerList> {
     return axios
       .get(`${this.endpoint}public/ticker/${currencyPairId}`)
       .then((res) => {
@@ -77,7 +101,7 @@ export class Stex {
       });
   }
 
-  getOrderBook(currencyPairId: number) {
+  getOrderBook(currencyPairId: number): Promise<OrderBook> {
     return axios
       .get(`${this.endpoint}public/orderbook/${currencyPairId}`)
       .then((res) => {
@@ -90,7 +114,7 @@ export class Stex {
   }
 
   // profiles
-  getWallets() {
+  getWallets(): Promise<WalletInfo[]> {
     return axios
       .get(`${this.endpoint}profile/wallets?sort=DESC&sortBy=BALANCE`, {
         headers: {
@@ -108,7 +132,7 @@ export class Stex {
       });
   }
 
-  getWalletById(id: number) {
+  getWalletById(id: number): Promise<WalletInfo> {
     return axios
       .get(`${this.endpoint}profile/wallets/${id.toString()}`, {
         headers: {
@@ -126,7 +150,7 @@ export class Stex {
       });
   }
 
-  createWallet(id: number) {
+  createWallet(id: number): Promise<WalletInfo> {
     return axios
       .post(
         `${this.endpoint}profile/wallets/${id.toString()}`,
@@ -150,7 +174,7 @@ export class Stex {
       });
   }
 
-  getDepositAddress(walletId: number) {
+  getDepositAddress(walletId: number): Promise<DepositAddress> {
     return axios
       .get(`${this.endpoint}profile/wallets/address/${walletId.toString()}`, {
         headers: {
@@ -168,7 +192,7 @@ export class Stex {
       });
   }
 
-  createNewDepositAddress(walletId: number) {
+  createNewDepositAddress(walletId: number): Promise<DepositAddress> {
     return axios
       .post(
         `${this.endpoint}profile/wallets/address/${walletId.toString}`,
@@ -192,7 +216,7 @@ export class Stex {
       });
   }
 
-  getOrders() {
+  getOrders(): Promise<Order[]> {
     return axios
       .get(`${this.endpoint}trading/orders`, {
         headers: {
@@ -210,9 +234,9 @@ export class Stex {
       });
   }
 
-  getOrdersById(id: number) {
+  getOrdersById(currencyPairId: number): Promise<Order[]> {
     return axios
-      .get(`${this.endpoint}trading/orders/${id.toString()}`, {
+      .get(`${this.endpoint}trading/orders/${currencyPairId.toString()}`, {
         headers: {
           Authorization: `Bearer ${this.key}`,
           'Content-Type': `application/json`,
@@ -228,7 +252,7 @@ export class Stex {
       });
   }
 
-  cancelAllOrders() {
+  cancelAllOrders(): Promise<CancelOrders> {
     return axios
       .delete(`${this.endpoint}trading/orders`, {
         headers: {
@@ -246,9 +270,9 @@ export class Stex {
       });
   }
 
-  cancelOrder(orderId: number) {
+  cancelOrdersByPair(currencyPairId: number): Promise<CancelOrders> {
     return axios
-      .delete(`${this.endpoint}trading/order/${orderId}`, {
+      .delete(`${this.endpoint}trading/orders/${currencyPairId}`, {
         headers: {
           Authorization: `Bearer ${this.key}`,
           'Content-Type': `application/json`,
@@ -259,12 +283,34 @@ export class Stex {
         if (res.data.success) {
           return res.data;
         } else {
-          throw `Cannot cancel order ${orderId}`;
+          throw `Cannot cancel order ${currencyPairId}`;
         }
       });
   }
 
-  getDeposit(currencyId: number) {
+  cancelOrdersByIds(
+    currencyPairId: number,
+    ids: number[]
+  ): Promise<CancelOrders> {
+    return axios
+      .delete(`${this.endpoint}trading/orders/bulk`, {
+        headers: {
+          Authorization: `Bearer ${this.key}`,
+          'Content-Type': `application/json`,
+          'User-Agent': 'stocks.exchange-client',
+        },
+        data: ids,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          return res.data;
+        } else {
+          throw `Cannot cancel order ${currencyPairId}`;
+        }
+      });
+  }
+
+  getDeposits(currencyId: number): Promise<Deposit[]> {
     return axios
       .get(`${this.endpoint}profile/deposits?currencyId=${currencyId}`, {
         headers: {
@@ -282,7 +328,7 @@ export class Stex {
       });
   }
 
-  getWithdraw(currencyId: number) {
+  getWithdraw(currencyId: number): Promise<Withdrawal[]> {
     return axios
       .get(`${this.endpoint}profile/withdrawals?currencyId=${currencyId}`, {
         headers: {
@@ -300,7 +346,12 @@ export class Stex {
       });
   }
 
-  createWithdraw(currencyId: number, amount: number, address: number) {
+  createWithdraw(
+    currencyId: number,
+    amount: number,
+    address: number,
+    protocolId: number
+  ): Promise<Withdrawal> {
     return axios
       .post(
         `${this.endpoint}profile/withdrawals`,
@@ -308,6 +359,7 @@ export class Stex {
           currency_id: currencyId,
           amount: amount,
           address: address,
+          protocol_id: protocolId,
         },
         {
           headers: {
@@ -326,7 +378,7 @@ export class Stex {
       });
   }
 
-  cancelWithdraw(withdrawalId: number) {
+  cancelWithdraw(withdrawalId: number): Promise<Withdrawal> {
     return axios
       .delete(`${this.endpoint}profile/withdraw/${withdrawalId}`, {
         headers: {
