@@ -55,7 +55,8 @@ export class Stex {
       }
     });
   }
-  getCurrencyPairs(code: string = 'enpty'): Promise<CurrencyPair[]> {
+
+  getCurrencyPairs(code: string = 'empty'): Promise<CurrencyPair[]> {
     return axios
       .get(`${this.endpoint}public/currency_pairs/list/${code}`)
       .then((res) => {
@@ -72,7 +73,11 @@ export class Stex {
       .get(`${this.endpoint}public/currency_pairs/${currencyPairId}`)
       .then((res) => {
         if (res.data.success) {
-          return res.data.data;
+          if (res.data.data.length == 0) {
+            throw 'Cannot get pair';
+          } else {
+            return res.data.data[0];
+          }
         } else {
           throw 'Cannot get pair';
         }
