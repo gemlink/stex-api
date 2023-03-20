@@ -12,6 +12,7 @@ import {
   WalletInfo,
   Withdrawal,
 } from './interface';
+import { OrderType } from './enum';
 
 export class Stex {
   key: string;
@@ -108,7 +109,9 @@ export class Stex {
 
   getOrderBook(currencyPairId: number): Promise<OrderBook> {
     return axios
-      .get(`${this.endpoint}public/orderbook/${currencyPairId}`)
+      .get(
+        `${this.endpoint}public/orderbook/${currencyPairId}?limit_bids=-1&limit_asks=-1`
+      )
       .then((res) => {
         if (res.data.success) {
           return res.data.data;
@@ -347,6 +350,37 @@ export class Stex {
           return res.data.data;
         } else {
           throw 'Cannot get withdraw';
+        }
+      });
+  }
+
+  createOrder(
+    currencyPairId: number,
+    type: OrderType,
+    amount: number,
+    price: number
+  ): Promise<Order> {
+    return axios
+      .post(
+        `${this.endpoint}/trading/orders/${currencyPairId}`,
+        {
+          type,
+          amount,
+          price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.key}`,
+            'Content-Type': `application/json`,
+            'User-Agent': 'stocks.exchange-client',
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          return res.data.data;
+        } else {
+          throw 'Cannot create withdraw';
         }
       });
   }
