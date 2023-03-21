@@ -362,7 +362,7 @@ export class Stex {
   ): Promise<Order> {
     return axios
       .post(
-        `${this.endpoint}/trading/orders/${currencyPairId}`,
+        `${this.endpoint}trading/orders/${currencyPairId}`,
         {
           type,
           amount,
@@ -377,6 +377,7 @@ export class Stex {
         }
       )
       .then((res) => {
+        console.log(res.data);
         if (res.data.success) {
           return res.data.data;
         } else {
