@@ -242,9 +242,27 @@ export class Stex {
       });
   }
 
-  getOrdersById(currencyPairId: number): Promise<Order[]> {
+  getOrdersByPairId(currencyPairId: number): Promise<Order[]> {
     return axios
       .get(`${this.endpoint}trading/orders/${currencyPairId.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${this.key}`,
+          'Content-Type': `application/json`,
+          'User-Agent': 'stocks.exchange-client',
+        },
+      })
+      .then((res) => {
+        if (res.data.success) {
+          return res.data.data;
+        } else {
+          throw 'Cannot get orders';
+        }
+      });
+  }
+
+  getOrderById(orderId: number): Promise<Order> {
+    return axios
+      .get(`${this.endpoint}reports/orders/${orderId}`, {
         headers: {
           Authorization: `Bearer ${this.key}`,
           'Content-Type': `application/json`,
@@ -358,7 +376,7 @@ export class Stex {
     currencyPairId: number,
     type: OrderType,
     amount: number,
-    price: number
+    price: string
   ): Promise<Order> {
     return axios
       .post(
@@ -389,12 +407,12 @@ export class Stex {
   createWithdraw(
     currencyId: number,
     amount: number,
-    address: number,
+    address: string,
     protocolId: number
   ): Promise<Withdrawal> {
     return axios
       .post(
-        `${this.endpoint}profile/withdrawals`,
+        `${this.endpoint}profile/withdraw`,
         {
           currency_id: currencyId,
           amount: amount,
@@ -410,6 +428,7 @@ export class Stex {
         }
       )
       .then((res) => {
+        console.log(res.data);
         if (res.data.success) {
           return res.data.data;
         } else {

@@ -3,7 +3,7 @@ import { Stex } from './stex';
 
 describe('Test stex', () => {
   const stex = new Stex(process.env.STEX_TOKEN);
-  console.log(stex.key);
+
   // it('should get balance ok', async () => {
   //   let data = await getWallets();
   //   // console.log(data);
@@ -42,9 +42,26 @@ describe('Test stex', () => {
     console.log(data);
   });
 
-  it('should create order ok', async () => {
+  // it('should create order ok', async () => {
+  //   // btc-glink
+  //   const data = await stex.createOrder(250, OrderType.Sell, 5, '0.0001');
+  //   console.log(data);
+  // });
+
+  // it('should get order ok', async () => {
+  //   // btc-glink
+  //   const data = await stex.getOrderById(1030377230);
+  //   console.log(data);
+  // });
+
+  it('should create withdraw ok', async () => {
     // btc-glink
-    const data = await stex.createOrder(250, OrderType.Sell, 5, 0.0001);
+    const data = await stex.createWithdraw(
+      161,
+      10,
+      's1VoST1wgYKwe3EcRu8DBWdJRbuWioDHUCM',
+      161
+    );
     console.log(data);
   });
 });
