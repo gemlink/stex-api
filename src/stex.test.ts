@@ -54,14 +54,14 @@ describe('Test stex', () => {
   //   console.log(data);
   // });
 
-  it('should create withdraw ok', async () => {
-    // btc-glink
-    const data = await stex.createWithdraw(
-      161,
-      10,
-      's1VoST1wgYKwe3EcRu8DBWdJRbuWioDHUCM',
-      161
-    );
-    console.log(data);
-  });
+  // it('should create withdraw ok', async () => {
+  //   // btc-glink
+  //   const data = await stex.createWithdraw(
+  //     161,
+  //     10,
+  //     's1VoST1wgYKwe3EcRu8DBWdJRbuWioDHUCM',
+  //     161
+  //   );
+  //   console.log(data);
+  // });
 });

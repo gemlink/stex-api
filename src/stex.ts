@@ -354,9 +354,27 @@ export class Stex {
       });
   }
 
-  getWithdraw(currencyId: number): Promise<Withdrawal[]> {
+  getCoinWithdraw(currencyId: number): Promise<Withdrawal[]> {
     return axios
       .get(`${this.endpoint}profile/withdrawals?currencyId=${currencyId}`, {
+        headers: {
+          Authorization: `Bearer ${this.key}`,
+          'Content-Type': `application/json`,
+          'User-Agent': 'stocks.exchange-client',
+        },
+      })
+      .then((res) => {
+        if (res.data.success) {
+          return res.data.data;
+        } else {
+          throw 'Cannot get withdraw';
+        }
+      });
+  }
+
+  getWithdraw(withdrawalId: number): Promise<Withdrawal> {
+    return axios
+      .get(`${this.endpoint}profile/withdrawals/${withdrawalId}`, {
         headers: {
           Authorization: `Bearer ${this.key}`,
           'Content-Type': `application/json`,
@@ -406,9 +424,10 @@ export class Stex {
 
   createWithdraw(
     currencyId: number,
-    amount: number,
+    protocolId: number,
     address: string,
-    protocolId: number
+    amount: number,
+    withdrawApi?: string
   ): Promise<Withdrawal> {
     return axios
       .post(
@@ -421,7 +440,7 @@ export class Stex {
         },
         {
           headers: {
-            Authorization: `Bearer ${this.key}`,
+            Authorization: `Bearer ${withdrawApi || this.key}`,
             'Content-Type': `application/json`,
             'User-Agent': 'stocks.exchange-client',
           },
