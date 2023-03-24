@@ -142,6 +142,13 @@ export interface WalletInfo {
   currency_type_id: number;
 }
 
+export interface TradingFee {
+  id: number;
+  currency_id: number;
+  amount: string;
+  timestamp: string;
+}
+
 export interface Order {
   id: number;
   currency_pair_id: number;
@@ -155,6 +162,7 @@ export interface Order {
   created: string;
   timestamp: string;
   status: string;
+  fees: TradingFee[];
 }
 
 export interface CancelOrders {

@@ -35,7 +35,7 @@ export class Stex {
     });
   }
 
-  getCurrenciesById(id: number): Promise<CurencyInfo> {
+  getCurrencyById(id: number): Promise<CurencyInfo> {
     return axios
       .get(`${this.endpoint}public/currencies/${id.toString()}`)
       .then((res) => {

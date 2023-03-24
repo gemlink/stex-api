@@ -36,11 +36,11 @@ describe('Test stex', () => {
   //   console.log(data);
   // });
 
-  it('should get pair ok', async () => {
-    // btc-glink
-    const data = await stex.getCurrencyPairInfo(250);
-    console.log(data);
-  });
+  // it('should get pair ok', async () => {
+  //   // btc-glink
+  //   const data = await stex.getCurrencyPairInfo(250);
+  //   console.log(data);
+  // });
 
   // it('should create order ok', async () => {
   //   // btc-glink
@@ -48,11 +48,13 @@ describe('Test stex', () => {
   //   console.log(data);
   // });
 
-  // it('should get order ok', async () => {
-  //   // btc-glink
-  //   const data = await stex.getOrderById(1030377230);
-  //   console.log(data);
-  // });
+  it('should get order ok', async () => {
+    // btc-glink
+    // const data = await stex.getOrderById(1037301267);
+    // console.log(data);
+    // const data2 = await stex.getOrderById(1037204722);
+    // console.log(data2);
+  });
 
   // it('should create withdraw ok', async () => {
   //   // btc-glink
@@ -64,4 +66,10 @@ describe('Test stex', () => {
   //   );
   //   console.log(data);
   // });
+
+  it('should get wallet ok', async () => {
+    // btc-glink
+    const data = await stex.getWalletById(86);
+    console.log(data);
+  });
 });
